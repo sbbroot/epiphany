@@ -25,16 +25,9 @@ class Prepare(Step):
         self.output_dir: str = input_data.output_dir
 
         # os -> os_family:
-        self.os_family = self.os_family = [value for key, value in self.FAMILY_MAPPER.items() if key in self.os ][0]
+        self.os_family = [value for key, value in self.FAMILY_MAPPER.items() if key in self.os ][0]
 
-    def __enter__(self):
-        super().__enter__()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        pass
-
-    def prepare(self) -> int:
+    def __generate_download_requirements_files(self):
         if self.arch not in SUPPORTED_OS[self.os]:
             raise Exception(f'Error: chosen arch: {self.arch} is not supported for os: {self.os}')
 
@@ -91,6 +84,15 @@ class Prepare(Step):
         self.make_file_executable(dest_path / 'download-requirements.py')
 
         self.logger.info(f'Prepared files for downloading the offline requirements in: {dest_path}')
+
+    def __generate_manifest_file(self):
+        pass
+
+    def prepare(self) -> int:
+        self.__generate_download_requirements_files()
+
+        self.__generate_manifest_file()
+
         return 0
 
     @staticmethod
